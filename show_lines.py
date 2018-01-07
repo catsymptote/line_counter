@@ -1,24 +1,32 @@
-## Single file script that counts lines in all plain text files in the current directory.
-## Excludes itself and any folders included in the excludedFolders list (assuming excludeFolders is true).
+##  Single file script that counts files, lines, and characters of plain text files in the current directory.
+##  Excludes itself and any files whos path are partly or entirely included in excludedPathList
+##  (assuming excludePathsis true).
 # Author:   Catsymptote
 # Email:    catsymptote@gmail.com
+
 
 ##########################################
 ##########################################
 
 ## Settings:
-# Exclude certain folders from the check?
-excludeFolders = True
+# Count lines and/or characters?
+checkLines = True
+checkChars = True
 
-# Folders to be excluded.
-excludedFolders = [
-    ".idea",
-    "venv",
-    ".git"
+# Exclude certain paths from the check?
+excludePaths = True
+
+# Paths (or parts of paths) to be excluded.
+excludedPathList = [
+    ".idea", "venv",    # PyCharm folders.
+    ".git"              # .git folder and .gitignore file.
 ]
 
 ##########################################
 ##########################################
+
+
+print("This counts all files, lines, and characters in all (non-excluded) files")
 
 
 import os
@@ -39,37 +47,47 @@ def is_this_file(file):
 
 
 def count_lines(file):
+    global totalLines
+    global totalChars
     try:
         with open(file) as f:
             lines = f.readlines()
-        return len(lines)
+        if(checkChars):
+            for i in range(len(lines)):
+                totalChars += len(lines[i])
+        totalLines += len(lines)
     except(Exception):
         return 0
 
 
 def purge_dirs():
-    for j in range(len(excludedFolders)):
+    for j in range(len(excludedPathList)):
         i = 0
         while(i < len(file_list)):
-            if (excludedFolders[j] in file_list[i]):
+            if (excludedPathList[j] in file_list[i]):
                 file_list.pop(i)
                 continue
             i += 1
 
 
 def run():
-    print("Start")
-    if(excludeFolders):
+    if(excludePaths):
         purge_dirs()
 
-    lines = 0
     for i in range(len(file_list)):
         if(not is_this_file(file_list[i])):
-            lines += count_lines(file_list[i])
+            if(checkLines):
+                count_lines(file_list[i])
 
-    print("Total lines: " + str(lines))
 
-
-directory = os.getcwd()
-file_list = get_files(directory)
+directory   = os.getcwd()
+file_list   = get_files(directory)
+totalLines  = 0
+totalChars  = 0
 run()
+
+print("Total files:\t\t" + str(len(file_list)))
+if(checkLines):
+    print("Total lines:\t\t" + str(totalLines))
+if(checkChars):
+    print("Total characters:\t" + str(totalChars))
