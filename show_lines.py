@@ -26,7 +26,7 @@ excludedPathList = [
 ##########################################
 
 
-print("This counts all files, lines, and characters in all (non-excluded) files")
+print("This script counts all files, lines, and characters in all (non-excluded) files (depending on settings).\n")
 
 
 import os
@@ -46,6 +46,7 @@ def is_this_file(file):
     if (file == os.path.realpath(__file__)):
         return True
     return False
+
 
 ##  Count lines (and characters) in the file.
 def counter(file):
@@ -84,7 +85,7 @@ def run():
                 counter(file_list[i])
 
 
-##  Get current dir, create file list and counter values, run dat shit, and print the results.
+##  Get current dir, create file list and counter values, run dat shit, print the results, and waits for exit.
 directory   = os.getcwd()
 file_list   = get_files(directory)
 totalLines  = 0
@@ -95,3 +96,4 @@ if(checkLines):
     print("Total lines:\t\t" + str(totalLines))
 if(checkChars):
     print("Total characters:\t" + str(totalChars))
+input("\nPress enter to exit...")
