@@ -32,6 +32,7 @@ print("This counts all files, lines, and characters in all (non-excluded) files"
 import os
 
 
+##  Returns list of flies in current directory.
 def get_files(directory):
     file_list = []
     for path, subdirs, files in os.walk(directory):
@@ -40,13 +41,14 @@ def get_files(directory):
     return file_list
 
 
+##  Checks if "file" is the path to this script file.
 def is_this_file(file):
     if (file == os.path.realpath(__file__)):
         return True
     return False
 
-
-def count_lines(file):
+##  Count lines (and characters) in the file.
+def counter(file):
     global totalLines
     global totalChars
     try:
@@ -60,6 +62,7 @@ def count_lines(file):
         return 0
 
 
+##  Removes excluded paths from the file (path) list.
 def purge_dirs():
     for j in range(len(excludedPathList)):
         i = 0
@@ -70,6 +73,7 @@ def purge_dirs():
             i += 1
 
 
+##  Wannabe main().
 def run():
     if(excludePaths):
         purge_dirs()
@@ -77,15 +81,15 @@ def run():
     for i in range(len(file_list)):
         if(not is_this_file(file_list[i])):
             if(checkLines):
-                count_lines(file_list[i])
+                counter(file_list[i])
 
 
+##  Get current dir, create file list and counter values, run dat shit, and print the results.
 directory   = os.getcwd()
 file_list   = get_files(directory)
 totalLines  = 0
 totalChars  = 0
 run()
-
 print("Total files:\t\t" + str(len(file_list)))
 if(checkLines):
     print("Total lines:\t\t" + str(totalLines))
