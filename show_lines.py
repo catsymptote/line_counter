@@ -12,6 +12,7 @@
 # Count lines and/or characters?
 checkLines = True
 checkChars = True
+checkWords = True
 
 # Exclude certain paths from the check?
 excludePaths = True
@@ -19,7 +20,8 @@ excludePaths = True
 # Paths (or parts of paths) to be excluded.
 excludedPathList = [
     ".idea", "venv",    # PyCharm folders.
-    ".git"              # .git folder and .gitignore file.
+    ".git",            	# .git folder and .gitignore file.
+	"show_lines.reg"	# Registry add file.
 ]
 
 ##########################################
@@ -52,13 +54,21 @@ def is_this_file(file):
 def counter(file):
     global totalLines
     global totalChars
+    global totalWords
     try:
         with open(file) as f:
             lines = f.readlines()
         if(checkChars):
             for i in range(len(lines)):
                 totalChars += len(lines[i])
+        if(checkWords):
+            for i in range(len(lines)):
+                for j in range(len(lines[i])):
+                    if(lines[i][j] == " " or lines[i][j] == "\n" or lines[i][j] == "\t"):
+                        totalWords += 1
+            totalWords -= 1
         totalLines += len(lines)
+
     except(Exception):
         return 0
 
@@ -90,10 +100,14 @@ directory   = os.getcwd()
 file_list   = get_files(directory)
 totalLines  = 0
 totalChars  = 0
+totalWords  = 0
 run()
-print("Total files:\t\t" + str(len(file_list)))
+print("Total files:\t\t" + str(len(file_list) -1))	# -1 to exclude this file.
 if(checkLines):
     print("Total lines:\t\t" + str(totalLines))
 if(checkChars):
     print("Total characters:\t" + str(totalChars))
-input("\nPress enter to exit...")
+if(checkWords):
+    print("Total words:\t\t" + str(totalWords))
+print("\nPress Enter to exit...")
+input()
